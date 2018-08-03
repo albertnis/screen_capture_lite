@@ -25,49 +25,49 @@ namespace Screen_Capture {
         void Join();
     };
 
-    template <class T, class F, class... E> bool TryCaptureMouse(const F &data, E... args)
-    {
-        T frameprocessor;
-        frameprocessor.ImageBufferSize = frameprocessor.MaxCursurorSize * frameprocessor.MaxCursurorSize * sizeof(ImageBGRA);
-        frameprocessor.ImageBuffer = std::make_unique<unsigned char[]>(frameprocessor.ImageBufferSize);
-        auto ret = frameprocessor.Init(data);
-        if (ret != DUPL_RETURN_SUCCESS) {
-            return false;
-        } 
-        while (!data->CommonData_.TerminateThreadsEvent) {
-            // get a copy of the shared_ptr in a safe way
+    // template <class T, class F, class... E> bool TryCaptureMouse(const F &data, E... args)
+    // {
+    //     T frameprocessor;
+    //     frameprocessor.ImageBufferSize = frameprocessor.MaxCursurorSize * frameprocessor.MaxCursurorSize * sizeof(ImageBGRA);
+    //     frameprocessor.ImageBuffer = std::make_unique<unsigned char[]>(frameprocessor.ImageBufferSize);
+    //     auto ret = frameprocessor.Init(data);
+    //     if (ret != DUPL_RETURN_SUCCESS) {
+    //         return false;
+    //     } 
+    //     while (!data->CommonData_.TerminateThreadsEvent) {
+    //         // get a copy of the shared_ptr in a safe way
 
-            std::shared_ptr<Timer> timer;
-            if constexpr(sizeof...(args) == 1) {
-                timer = std::atomic_load(&data->WindowCaptureData.MouseTimer);
-            }
-            else {
-                timer = std::atomic_load(&data->ScreenCaptureData.MouseTimer);
-            }
+    //         std::shared_ptr<Timer> timer;
+    //         if constexpr(sizeof...(args) == 1) {
+    //             timer = std::atomic_load(&data->WindowCaptureData.MouseTimer);
+    //         }
+    //         else {
+    //             timer = std::atomic_load(&data->ScreenCaptureData.MouseTimer);
+    //         }
 
-            timer->start();
-            // Process Frame
-            ret = frameprocessor.ProcessFrame();
-            if (ret != DUPL_RETURN_SUCCESS) {
-                if (ret == DUPL_RETURN_ERROR_EXPECTED) {
-                    // The system is in a transition state so request the duplication be restarted
-                    data->CommonData_.ExpectedErrorEvent = true;
-                    std::cout << "Exiting Thread due to expected error " << std::endl;
-                }
-                else {
-                    // Unexpected error so exit the application
-                    data->CommonData_.UnexpectedErrorEvent = true;
-                    std::cout << "Exiting Thread due to Unexpected error " << std::endl;
-                }
-                return true;
-            }
-            timer->wait();
-            while (data->CommonData_.Paused) {
-                std::this_thread::sleep_for(50ms);
-            }
-        }
-        return true;
-    }
+    //         timer->start();
+    //         // Process Frame
+    //         ret = frameprocessor.ProcessFrame();
+    //         if (ret != DUPL_RETURN_SUCCESS) {
+    //             if (ret == DUPL_RETURN_ERROR_EXPECTED) {
+    //                 // The system is in a transition state so request the duplication be restarted
+    //                 data->CommonData_.ExpectedErrorEvent = true;
+    //                 std::cout << "Exiting Thread due to expected error " << std::endl;
+    //             }
+    //             else {
+    //                 // Unexpected error so exit the application
+    //                 data->CommonData_.UnexpectedErrorEvent = true;
+    //                 std::cout << "Exiting Thread due to Unexpected error " << std::endl;
+    //             }
+    //             return true;
+    //         }
+    //         timer->wait();
+    //         while (data->CommonData_.Paused) {
+    //             std::this_thread::sleep_for(50ms);
+    //         }
+    //     }
+    //     return true;
+    // }
 
     inline bool HasMonitorsChanged(const std::vector<Monitor> &startmonitors, const std::vector<Monitor> &nowmonitors)
     {

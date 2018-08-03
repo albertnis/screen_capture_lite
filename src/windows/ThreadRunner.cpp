@@ -54,7 +54,8 @@ namespace Screen_Capture {
     {
         if (!SwitchToInputDesktop(data))
             return;
-        TryCaptureMouse<GDIMouseProcessor>(data);
+        return;
+        // TryCaptureMouse<GDIMouseProcessor>(data);
     }
     void RunCaptureMonitor(std::shared_ptr<Thread_Data> data, Monitor monitor)
     {

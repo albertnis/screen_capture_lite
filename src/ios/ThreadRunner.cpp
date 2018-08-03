@@ -7,7 +7,7 @@
 namespace SL{
     namespace Screen_Capture{
         void RunCaptureMouse(std::shared_ptr<Thread_Data> data) {
-            TryCaptureMouse<NSMouseProcessor>(data);
+            // TryCaptureMouse<NSMouseProcessor>(data);
         }
         void RunCaptureMonitor(std::shared_ptr<Thread_Data> data, Monitor monitor){
             TryCaptureMonitor<NSFrameProcessor>(data, monitor);
